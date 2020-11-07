@@ -188,4 +188,135 @@ window.addEventListener('DOMContentLoaded', function(){
     };
 
     tabs();
+
+    // Слайдер
+    const slider = () => {
+        const slide = document.querySelectorAll('.portfolio-item'),
+            btn = document.querySelectorAll('.portfolio-btn'),
+            dot = document.querySelectorAll('.dot'),
+            slider = document.querySelector('.portfolio-content');
+
+        // номер слайда, по-умолчанию 0
+        let currentSlide = 0, 
+            interval; 
+
+        // Функция следующий слайд
+        const prevSlide = (elem, index, stringClass) => {
+            // Пример: slide[currentSlide].classList.remove('portfolio-item-active');
+            elem[index].classList.remove(stringClass);
+        };
+
+        // Предыдущий слайд
+        const nextSlide = (elem, index, stringClass) => {
+            elem[index].classList.add(stringClass);
+        };
+
+        // Слайдшоу
+        const autoPlaySlide = () => {
+
+            // Удаляем активный класс у активных слайдов
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+
+            // Удаляем активный класс у активных точек
+            prevSlide (dot, currentSlide, 'dot-active');
+
+            currentSlide++;
+
+            // Ограничевает слайды по колличеству, замыкает круг
+            if (currentSlide >= slide.length) {
+                // Если слайд последний, то возвращаемся к первому
+                currentSlide = 0;
+            }
+
+            // Активирует следующий класс
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+
+            // активирует следующую точку
+            nextSlide (dot, currentSlide, 'dot-active');
+        };
+
+        // Запуcкает слайдер каждые time секунд
+        const startSlide = (time = 3000) => {
+            interval = setInterval(autoPlaySlide, time);
+        };
+
+        // Останавливает слайдер
+        const stopSlide = () => {
+            clearInterval(interval);
+        };
+        
+        slider.addEventListener('click', (event) => {
+
+            // Ссылка теперь не сслыка
+            event.preventDefault();
+
+            let target = event.target;
+
+            //Если кликнули мимо .portfolio-btn и .dot, то return (дальше действий нет)
+            if (!target.matches('.portfolio-btn, .dot')) {
+                return;
+            }
+            console.log(target);
+            
+            // Удаляем активный класс у активных слайдов
+            prevSlide(slide, currentSlide, 'portfolio-item-active');
+
+            // Удаляем активный класс у активных точек
+            prevSlide (dot, currentSlide, 'dot-active');
+
+            // Проверка: Куда конкретно кликнули
+            if (target.matches('#arrow-right')) {
+                currentSlide++;
+            } else if (target.matches('#arrow-left')) {
+                currentSlide--;
+            } else if (target.matches('.dot')) {
+                dot.forEach((elem, index) => {
+                    if (elem === target) {
+                        // Присваиваем currentSlide индекс точки на которую кликнули
+                        currentSlide = index;
+                    }
+                });
+            }
+
+            // Условия возврата от проследнего слайда к первому, замыкает круг
+            if (currentSlide >= slide.length) {
+                
+                currentSlide = 0;
+            }
+
+            // Условия возврата от первого слайда к последнему, замыкает круг
+            if (currentSlide < 0) {
+
+                currentSlide = slide.length - 1;
+            }
+
+            // Активирует следующий класс, после условий if-else выше 
+            nextSlide(slide, currentSlide, 'portfolio-item-active');
+
+            // активирует следующую точку, после условий if-else выше
+            nextSlide (dot, currentSlide, 'dot-active');
+
+        });
+
+        // Если курсор зашел на .dot или стрелках, останавливать слайдшоу
+        slider.addEventListener('mouseover', (event) => {
+            if (event.target.matches('.portfolio-btn') || 
+                event.target.matches('.dot')) {
+                    stopSlide();
+                }
+        });
+
+        // Если курсор покинул на .dot или стрелках, возобновить слайдшоу
+        slider.addEventListener('mouseout', (event) => {
+            if (event.target.matches('.portfolio-btn') || 
+                event.target.matches('.dot')) {
+                    startSlide();
+                }
+        });
+
+        startSlide(1500);
+    };
+
+    slider();
 });
+
