@@ -192,13 +192,36 @@ window.addEventListener('DOMContentLoaded', function(){
     // Слайдер
     const slider = () => {
         const slide = document.querySelectorAll('.portfolio-item'),
-            btn = document.querySelectorAll('.portfolio-btn'),
-            dot = document.querySelectorAll('.dot'),
-            slider = document.querySelector('.portfolio-content');
-
+            slider = document.querySelector('.portfolio-content'), //ul родитель для слайдев li
+            portfolioDots = document.querySelector('.portfolio-dots');
+        
         // номер слайда, по-умолчанию 0
-        let currentSlide = 0, 
-            interval; 
+        let currentSlide = 0,
+            interval,
+            dot = {};
+
+        // Функция создания .dot
+        const createDot = () => {
+
+            //Счетчик
+            let count = 0;
+            // Элемент .dot
+            let li = `<li class="dot"></li>`;
+        
+            slide.forEach(() => {
+
+                if (count <= slide.length) {
+
+                    portfolioDots.insertAdjacentHTML('beforeend', li);
+                    count++;
+                }
+            });
+
+            dot = document.querySelectorAll('.dot');
+            dot[0].classList.add('dot-active');
+        };
+
+        createDot();
 
         // Функция следующий слайд
         const prevSlide = (elem, index, stringClass) => {
